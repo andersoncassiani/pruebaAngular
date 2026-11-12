@@ -1,0 +1,17 @@
+# Backend
+venv/
+.env
+__pycache__/
+*.pyc
+uploads/
+
+# Frontend
+node_modules/
+dist/
+.angular/
+
+# Editor y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
