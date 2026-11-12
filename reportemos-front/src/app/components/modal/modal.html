@@ -1,0 +1,14 @@
+<!-- Fondo oscuro. Si hacen clic afuera de la caja, se cierra -->
+<div class="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" (click)="cerrar.emit()">
+
+  <!-- stopPropagation: un clic DENTRO de la caja no debe cerrar el modal -->
+  <div class="w-full max-w-sm bg-white rounded-xl shadow-lg p-6" (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-slate-900">{{ titulo() }}</h3>
+      <button (click)="cerrar.emit()" class="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+    </div>
+
+    <!-- Aquí se pinta lo que el padre ponga entre <app-modal> y </app-modal> -->
+    <ng-content />
+  </div>
+</div>

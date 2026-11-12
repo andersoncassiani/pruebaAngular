@@ -1,0 +1,66 @@
+<h2 class="text-xl font-semibold text-slate-900 mb-6">Todos los reportes</h2>
+
+<!-- Filtros -->
+<div class="flex gap-2 mb-4">
+  <button (click)="filtrar('')"
+    [class]="filtro() === '' ? 'bg-emerald-700 text-white' : 'bg-white text-slate-700 border border-slate-300'"
+    class="px-3 py-1.5 text-sm rounded-md">Todos</button>
+  <button (click)="filtrar('pendiente')"
+    [class]="filtro() === 'pendiente' ? 'bg-emerald-700 text-white' : 'bg-white text-slate-700 border border-slate-300'"
+    class="px-3 py-1.5 text-sm rounded-md">Pendientes</button>
+  <button (click)="filtrar('recogido')"
+    [class]="filtro() === 'recogido' ? 'bg-emerald-700 text-white' : 'bg-white text-slate-700 border border-slate-300'"
+    class="px-3 py-1.5 text-sm rounded-md">Recogidos</button>
+</div>
+
+<div class="bg-white border border-slate-200 rounded-lg overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-500 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Foto</th>
+        <th class="px-4 py-3 font-medium">Reporte</th>
+        <th class="px-4 py-3 font-medium">Reportado por</th>
+        <th class="px-4 py-3 font-medium">Fecha</th>
+        <th class="px-4 py-3 font-medium">Estado</th>
+        <th class="px-4 py-3 font-medium"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (reporte of adminService.reportes(); track reporte.id) {
+        <tr class="border-t border-slate-100 align-top">
+          <td class="px-4 py-3">
+            @if (reporte.foto) {
+              <a [href]="api + reporte.foto" target="_blank">
+                <img [src]="api + reporte.foto" [alt]="reporte.titulo" class="w-16 h-16 object-cover rounded-md" />
+              </a>
+            } @else {
+              <div class="w-16 h-16 rounded-md bg-slate-100"></div>
+            }
+          </td>
+          <td class="px-4 py-3">
+            <p class="font-medium text-slate-900">{{ reporte.titulo }}</p>
+            <p class="text-xs text-slate-500">📍 {{ reporte.direccion }}</p>
+          </td>
+          <td class="px-4 py-3 text-slate-600">{{ reporte.usuario.nombre }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ reporte.creado_en | date: 'dd/MM/yyyy' }}</td>
+          <td class="px-4 py-3">
+            @if (reporte.estado === 'pendiente') {
+              <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Pendiente</span>
+            } @else {
+              <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Recogido</span>
+            }
+          </td>
+          <td class="px-4 py-3">
+            <button (click)="cambiarEstado(reporte)" class="text-slate-700 hover:text-emerald-700 whitespace-nowrap">
+              {{ reporte.estado === 'pendiente' ? 'Marcar recogido' : 'Marcar pendiente' }}
+            </button>
+          </td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="6" class="px-4 py-6 text-center text-slate-400">No hay reportes.</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,75 @@
+<h2 class="text-xl font-semibold text-slate-900 mb-6">Usuarios</h2>
+
+@if (mensaje()) {
+  <p class="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-md p-3 mb-4">{{ mensaje() }}</p>
+}
+
+<div class="bg-white border border-slate-200 rounded-lg overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead class="bg-slate-50 text-slate-500 text-left">
+      <tr>
+        <th class="px-4 py-3 font-medium">Nombre</th>
+        <th class="px-4 py-3 font-medium">Correo</th>
+        <th class="px-4 py-3 font-medium">Rol</th>
+        <th class="px-4 py-3 font-medium">Estado</th>
+        <th class="px-4 py-3 font-medium">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of adminService.usuarios(); track usuario.id) {
+        <tr class="border-t border-slate-100">
+          <td class="px-4 py-3 text-slate-900">{{ usuario.nombre }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ usuario.correo }}</td>
+          <td class="px-4 py-3 text-slate-600">{{ usuario.rol }}</td>
+          <td class="px-4 py-3">
+            @if (usuario.activo) {
+              <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Activo</span>
+            } @else {
+              <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">Inactivo</span>
+            }
+          </td>
+          <td class="px-4 py-3">
+            <!-- El admin no puede desactivarse a sí mismo -->
+            @if (usuario.id !== auth.usuario()?.id) {
+              <div class="flex gap-3">
+                <button (click)="cambiarEstado(usuario)" class="text-slate-700 hover:text-emerald-700">
+                  {{ usuario.activo ? 'Desactivar' : 'Activar' }}
+                </button>
+                <button (click)="abrirModalClave(usuario)" class="text-slate-700 hover:text-emerald-700">
+                  Cambiar clave
+                </button>
+              </div>
+            } @else {
+              <span class="text-xs text-slate-400">Tú</span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal para cambiar la clave. Solo existe si hay un usuario seleccionado -->
+@if (usuarioClave(); as usuario) {
+  <app-modal [titulo]="'Nueva clave para ' + usuario.nombre" (cerrar)="cerrarModalClave()">
+    <form (ngSubmit)="guardarClave()" class="space-y-4">
+      <input type="password" name="nuevaClave" [(ngModel)]="nuevaClave" placeholder="Mínimo 6 caracteres"
+        class="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+
+      @if (errorClave()) {
+        <p class="text-sm text-red-600">{{ errorClave() }}</p>
+      }
+
+      <div class="flex justify-end gap-3">
+        <button type="button" (click)="cerrarModalClave()"
+          class="px-4 py-2 text-sm text-slate-700 border border-slate-300 rounded-md hover:bg-slate-50">
+          Cancelar
+        </button>
+        <button type="submit"
+          class="px-4 py-2 bg-emerald-700 text-white text-sm font-medium rounded-md hover:bg-emerald-800">
+          Guardar
+        </button>
+      </div>
+    </form>
+  </app-modal>
+}

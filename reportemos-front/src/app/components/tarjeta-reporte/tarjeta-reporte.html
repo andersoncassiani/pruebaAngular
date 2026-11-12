@@ -1,0 +1,27 @@
+<div class="bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col">
+  <!-- La API guarda la ruta (/uploads/...), aquí le pegamos la dirección del servidor -->
+  @if (reporte().foto) {
+    <img [src]="api + reporte().foto" [alt]="reporte().titulo" class="w-full h-40 object-cover" />
+  }
+
+  <div class="p-4 flex flex-col gap-2">
+    <div class="flex justify-between items-start gap-2">
+      <h3 class="font-medium text-slate-900">{{ reporte().titulo }}</h3>
+
+      @if (reporte().estado === 'pendiente') {
+        <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">Pendiente</span>
+      } @else {
+        <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Recogido</span>
+      }
+    </div>
+
+    <p class="text-sm text-slate-600">{{ reporte().descripcion }}</p>
+    <p class="text-xs text-slate-500">📍 {{ reporte().direccion }}</p>
+    <p class="text-xs text-slate-400">{{ reporte().creado_en | date: 'dd/MM/yyyy' }}</p>
+
+    <div class="flex gap-3 pt-2 border-t border-slate-100">
+      <button (click)="editar.emit(reporte())" class="text-sm text-slate-700 hover:text-emerald-700">Editar</button>
+      <button (click)="eliminar.emit(reporte().id)" class="text-sm text-red-600 hover:text-red-700">Eliminar</button>
+    </div>
+  </div>
+</div>
